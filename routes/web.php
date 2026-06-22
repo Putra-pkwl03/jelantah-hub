@@ -36,23 +36,16 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckLocationSetup::
 
     // PERAN: PENGEPUL
     Route::prefix('pengepul')->name('pengepul.')->group(function () {
-        // Dashboard
-        Route::get('/dashboard', function () {
-            if (Auth::user()->role !== 'pengepul') {
-                return redirect('/' . Auth::user()->role . '/dashboard');
-            }
-            return view('dashboard.pengepul'); 
-        })->name('dashboard');
+        // [AMMAN] Mengarah ke SetoranController yang sudah Anda tambahkan method-nya
+        Route::get('/dashboard', [SetoranController::class, 'dashboardPengepul'])->name('dashboard');
 
         // 1. Atur Harga Beli (Kaskade Harga)
         Route::get('/harga', [HargaController::class, 'index'])->name('harga.index');
         Route::post('/harga', [HargaController::class, 'store'])->name('harga.store');
 
+        // 2. Setoran Masuk dari Masyarakat (Duplikasi rute sudah dibersihkan)
         Route::get('/setoran', [SetoranController::class, 'indexPengepul'])->name('setoran.index');
-
-        // 2. Setoran Masuk dari Masyarakat
-Route::get('/setoran', [SetoranController::class, 'indexPengepul'])->name('setoran.index');
-Route::post('/setoran/{id}/uji', [SetoranController::class, 'simpanUjiPengepul'])->name('setoran.simpan-uji'); 
+        Route::post('/setoran/{id}/uji', [SetoranController::class, 'simpanUjiPengepul'])->name('setoran.simpan-uji'); 
 
         // 3. Kirim ke PT HEN & Riwayat Lab
         Route::get('/pengiriman', [PengirimanController::class, 'index'])->name('pengiriman.index');
@@ -62,14 +55,33 @@ Route::post('/setoran/{id}/uji', [SetoranController::class, 'simpanUjiPengepul']
 
     // PERAN: STAKEHOLDER (HEN)
     Route::prefix('stakeholder')->name('stakeholder.')->group(function () {
+        // Dashboard Utama PT HEN
         Route::get('/dashboard', [StakeholderController::class, 'index'])->name('dashboard');
+        
+        // Audit log bawaan
         Route::get('/audit-log', [StakeholderController::class, 'auditLog'])->name('audit');
         
-        // Kendali Mutu Hasil Uji Lab
+        // 1. Kelola Harga Acuan & Lokasi Pabrik HEN
+        Route::get('/harga', [StakeholderController::class, 'hargaIndex'])->name('harga.index');
+        Route::post('/harga/update', [StakeholderController::class, 'hargaUpdate'])->name('harga.update');
+
+        // 2. Fitur Pengiriman Masuk & Validasi Lab
+        Route::get('/pengiriman', [StakeholderController::class, 'pengirimanIndex'])->name('pengiriman.index');
+        Route::post('/hub/store', [StakeholderController::class, 'storeHub'])->name('hub.store');
+        
+        Route::put('/pengiriman/update-lab/{id}', [StakeholderController::class, 'updateLab'])->name('updateLab');
+        Route::put('/pengiriman/update-otorisasi/{id}', [StakeholderController::class, 'updateOtorisasi'])->name('updateOtorisasi');
+        
+        Route::get('/pengiriman/{id}/uji-lab', [StakeholderController::class, 'labCreate'])->name('pengiriman.lab');
+        Route::post('/pengiriman/{id}/validasi', [StakeholderController::class, 'validasiStore'])->name('pengiriman.validasi');
         Route::get('/setoran/{id}/lab', [StakeholderController::class, 'editLab'])->name('lab.edit');
         Route::patch('/setoran/{id}/lab', [StakeholderController::class, 'updateLab'])->name('lab.update');
-    });
 
+        // Rute untuk Update & Delete Hub Lokasi
+        Route::put('/stakeholder/hub/update/{id}', [StakeholderController::class, 'updateHub'])->name('stakeholder.hub.update');
+        Route::delete('/stakeholder/hub/destroy/{id}', [StakeholderController::class, 'destroyHub'])->name('stakeholder.hub.destroy');
+        Route::get('/stakeholder/hub/detail-area', [StakeholderController::class, 'getDetailAreaHub'])->name('stakeholder.hub.detail-area');
+    });
 });
 
 // =========================================================================

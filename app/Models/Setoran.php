@@ -17,6 +17,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'liter_bersih',
     'endapan',
     'harga_dibayar',
+    
+    // 🌟 Kolom Hasil Uji Lab & Otorisasi PT HEN
+    'kadar_air',
+    'ffa',
+    'kotoran',
+    'grade',
+    'liter_final',
 ])]
 class Setoran extends Model
 {
@@ -31,6 +38,12 @@ class Setoran extends Model
             'liter_bersih'        => 'float',
             'endapan'             => 'float',
             'harga_dibayar'       => 'integer',
+            
+            // 🌟 Casting metrik lab ke float agar mendukung angka desimal/persentase
+            'kadar_air'           => 'float',
+            'ffa'                 => 'float',
+            'kotoran'             => 'float',
+            'liter_final'         => 'float',
         ];
     }
 

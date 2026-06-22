@@ -10,19 +10,14 @@ class PengepulController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil koordinat posisi masyarakat dari request (jika dikirim oleh JavaScript browser)
-        // Jika browser belum mendeteksi lokasi, set default ke titik koordinat kantor/pusat kota
-        $userLat = $request->get('lat', -7.5661); // Default contoh: Surakarta/Solo
+        $userLat = $request->get('lat', -7.5661); 
         $userLng = $request->get('lng', 110.8243);
 
-        // 2. Ambil semua user yang memiliki role 'pengepul'
         $pengepulList = User::where('role', 'pengepul')->get();
 
-        // 3. Hitung jarak tiap pengepul menggunakan Rumus Jarak Bumi (Haversine Formula)
         $hasilPencarian = $pengepulList->map(function ($pengepul) use ($userLat, $userLng) {
-            $earthRadius = 6371; // Radius bumi dalam satuan Kilometer
+            $earthRadius = 6371; 
 
-            // Konversi derajat ke radian
             $dLat = deg2rad($pengepul->latitude - $userLat);
             $dLng = deg2rad($pengepul->longitude - $userLng);
 
@@ -31,14 +26,18 @@ class PengepulController extends Controller
                  sin($dLng / 2) * sin($dLng / 2);
             
             $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-            $jarak = $earthRadius * $c; // Hasil akhir dalam Kilometer
+            $jarak = $earthRadius * $c; 
 
-            // Tempelkan data jarak hasil hitungan ke object pengepul
             $pengepul->jarak = round($jarak, 2); 
             return $pengepul;
-        })->sortBy('jarak'); // Urutkan langsung dari jarak yang paling dekat dekat
+        })
+        ->sort(function ($a, $b) {
+            if ($a->jarak == $b->jarak) {
+                return $b->harga_per_liter <=> $a->harga_per_liter;
+            }
+            return $a->jarak <=> $b->jarak;
+        });
 
-        // 4. Lempar data hasil sortir ke halaman Blade view
         return view('masyarakat.pengepul.index', compact('hasilPencarian', 'userLat', 'userLng'));
     }
 }

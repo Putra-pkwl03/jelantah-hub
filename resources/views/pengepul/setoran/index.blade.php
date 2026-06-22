@@ -1,4 +1,14 @@
 <x-app-layout>
+    <x-slot name="header">
+        <div>
+            <h2 class="font-bold text-lg text-slate-800 leading-tight">
+                Pusat Kendali Setoran Minyak Masyarakat
+            </h2>
+            <span class="text-xs font-medium text-slate-500 mt-1 block">
+                Validasi kuantitas bersih, kadar endapan, dan konfirmasi.
+            </span>
+        </div>
+    </x-slot>
     <div x-data="{ openModal: false, actionUrl: '', namaWarga: '', estimasi: 0, tglJemput: '' }" class="bg-slate-50 text-slate-800">
         <div class="max-w-7xl mx-auto space-y-6">
             

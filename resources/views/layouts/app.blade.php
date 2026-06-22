@@ -60,7 +60,7 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="transform opacity-100 scale-100"
                                  x-transition:leave-end="transform opacity-0 scale-95"
-                                 class="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-50 raw-dropdown"
+                                 class="absolute right-0 mt-2 w-48 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-999 raw-dropdown"
                                  style="display: none;">
                                 
                                 <div class="px-4 py-2 border-b border-slate-100 md:hidden">

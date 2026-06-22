@@ -6,17 +6,14 @@
             <div class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-emerald-800/30 blur-xl"></div>
             
             <div class="relative z-10">
-                <div class="flex items-center gap-2 mb-2">
-                    <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-bold tracking-tight">JelantahHub</span>
-                </div>
-                <p class="text-[11px] text-emerald-200 uppercase tracking-wider font-semibold">PT Hijau Energi Nusantara</p>
-            </div>
-
+    <div class="flex items-center gap-3 mb-2">
+        <div class="w-8 h-8 rounded-lg overflow-hidden backdrop-blur-sm shrink-0 shadow-sm">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo JetOil" class="w-full h-full object-cover">
+        </div>
+        <span class="text-xl font-extrabold tracking-tight text-white">JetOil</span>
+    </div>
+    <p class="text-[11px] text-emerald-200 uppercase tracking-wider font-semibold">PT Hijau Energi Nusantara</p>
+</div>
             <div class="my-12 relative z-10">
                 <div x-show="isLogin" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-x-4" x-transition:enter-end="opacity-100 transform translate-x-0">
                     <h3 class="text-2xl font-bold mb-3">Selamat Datang Kembali!</h3>

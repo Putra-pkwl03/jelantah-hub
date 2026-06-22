@@ -8,22 +8,40 @@ use Illuminate\Support\Facades\Auth;
 
 class PengepulSetoranController extends Controller
 {
-    /**
-     * [READ] Menampilkan Dashboard Utama Pengepul (Daftar Setoran Masuk)
-     */
-    public function dashboard()
+   public function dashboard()
     {
         if (Auth::user()->role !== 'pengepul') {
             return redirect('/' . Auth::user()->role . '/dashboard');
         }
 
-        // Ambil semua setoran dari masyarakat yang ditujukan ke pengepul ini
-        $setoranMasuk = Setoran::with('masyarakat')
-            ->where('pengepul_id', Auth::id())
-            ->latest()
-            ->get();
+        $pengepulId = Auth::id();
 
-        return view('dashboard.pengepul', compact('setoranMasuk'));
+        // 1. HITUNG STATISTIK SECARA DINAMIS DARI DATABASE
+        
+        // Total Stok Tangki = Akumulasi 'liter_bersih' dari setoran yang berstatus 'selesai'
+        $totalStok = Setoran::where('pengepul_id', $pengepulId)
+            ->where('status', 'selesai')
+            ->sum('liter_bersih');
+
+        // Antrean Penjemputan = Jumlah transaksi yang berstatus 'pending' atau 'dijemput'
+        $jumlahAntrean = Setoran::where('pengepul_id', $pengepulId)
+            ->whereIn('status', ['pending', 'dijemput'])
+            ->count();
+
+        // Kas Dana Cair = Total akumulasi 'harga_dibayar' yang telah diserahkan ke masyarakat
+        $totalKasCair = Setoran::where('pengepul_id', $pengepulId)
+            ->where('status', 'selesai')
+            ->sum('harga_dibayar');
+
+        // 2. AMBIL DAFTAR ANTRIAN TRANSAKSI
+       $setoranMasuk = Setoran::with(['masyarakat' => function($query) {
+        $query->select('id', 'name', 'latitude', 'longitude'); // Pastikan latitude & longitude ikut ditarik
+    }])
+    ->where('pengepul_id', $pengepulId)
+    ->latest()
+    ->get();
+
+        return view('dashboard.pengepul', compact('setoranMasuk', 'totalStok', 'jumlahAntrean', 'totalKasCair'));
     }
 
     /**

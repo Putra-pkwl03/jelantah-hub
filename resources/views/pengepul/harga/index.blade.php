@@ -1,6 +1,16 @@
 <x-app-layout>
+    <x-slot name="header">
+        <div>
+            <h2 class="font-bold text-lg text-slate-800 leading-tight">
+                Pusat Kendali Harga
+            </h2>
+            <span class="text-xs font-medium text-slate-500 mt-1 block">
+                Kelola validasi harga, atur harga beli.
+            </span>
+        </div>
+    </x-slot>
     <div class=" bg-slate-50 text-slate-800  selection:bg-emerald-100 selection:text-emerald-900">
-        <div class="max-w-4xl mx-auto space-y-8">
+        <div class="max-w-7xl mx-auto space-y-4">
             
             @if(session('success'))
                 <div class="p-4 mb-4 text-sm text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 shadow-sm" role="alert">
